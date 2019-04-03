@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.Random;
 
 public class Board {
     private int size;
@@ -9,17 +10,54 @@ public class Board {
     private int forward_checking_set_queen = 0;
     private int back_tracking_set_queen = 0;
 
+    ArrayList<ArrayList<Integer>> usedCol = new ArrayList<>();
+
     public Board(int size) {
         this.size = size;
+        for (int i = 0; i < size; i++) {
+            usedCol.add(new ArrayList<>());
+        }
     }
-
-    private boolean[][] board = new boolean[size][size];
 
     ArrayList<Queen> queens = new ArrayList<>();
 
     private boolean added = false;
 
     private int previousCol = 0;
+
+    public void forwardCheckingRandPosition() {
+        Queen temp = new Queen();
+        int col = 0;
+        boolean back = false;
+        Random r = new Random();
+        ArrayList<Integer> temporary;
+        for (int row = 0; row < size; row++) {
+            temporary = usedCol.get(row);
+            back = false;
+            do {
+                if (temporary.size() == size) {
+                    temporary.clear();
+                    row -= 2;
+                    queens.remove(queens.size() - 1);
+                    forward_checking_returns += 1;
+                    back = true;
+                    break;
+                } else {
+                    do {
+                        col = r.nextInt(size);
+                    } while (temporary.contains(col));
+                    temp = new Queen(row, col);
+                    temporary.add(col);
+                }
+            } while (checkCollision(temp));
+            if (!back) {
+                forward_checking_set_queen += 1;
+                queens.add(temp);
+            }
+
+        }
+    }
+
 
     public void forwardChecking() {
         Queen temp;
@@ -46,24 +84,61 @@ public class Board {
         }
     }
 
-    public void backTracking() {
+    public void backTrackingRandPosition() {
         Queen temp;
-        int previousCol = 0;
+        int col;
+        Random r = new Random();
+        ArrayList<Integer> temporary;
         for (int row = 0; row < size; row++) {
-            temp = new Queen(row, previousCol);
-            queens.add(temp);
-            back_tracking_set_queen += 1;
 
-            if (checkCollision(queens.get(queens.size() - 1))) {
+            temporary = usedCol.get(row);
+            System.out.println(temporary);
+
+            if (temporary.size() == size) {
                 temp = queens.remove(queens.size() - 1);
                 row = temp.getRow() - 1;
-                previousCol = temp.getCol() + 1;
                 back_tracking_returns += 1;
+                temporary.clear();
             } else {
-                previousCol = 0;
+                do {
+                    col = r.nextInt(size);
+
+                } while (temporary.contains(col));
+
+                temporary.add(col);
+                temp = new Queen(row, col);
+
+                queens.add(temp);
+                back_tracking_set_queen += 1;
+
+                if (checkCollision(queens.get(queens.size() - 1))) {
+                    temp = queens.remove(queens.size() - 1);
+                    row = temp.getRow() - 1;
+                    back_tracking_returns += 1;
+                }
             }
         }
+
     }
+
+//    public void backTracking() {
+//        Queen temp;
+//        int previousCol = 0;
+//        for (int row = 0; row < size; row++) {
+//            temp = new Queen(row, previousCol);
+//            queens.add(temp);
+//            back_tracking_set_queen += 1;
+//
+//            if (checkCollision(queens.get(queens.size() - 1))) {
+//                temp = queens.remove(queens.size() - 1);
+//                row = temp.getRow() - 1;
+//                previousCol = temp.getCol() + 1;
+//                back_tracking_returns += 1;
+//            } else {
+//                previousCol = 0;
+//            }
+//        }
+//    }
 
     public void print() {
         Queen temp;
@@ -74,7 +149,7 @@ public class Board {
             System.out.print(" " + col + " |");
         }
         System.out.println();
-        for (int col = 0; col < size; col++) {
+        for (int col = 0; col < size-1; col++) {
             System.out.print("-----");
         }
 
@@ -97,7 +172,7 @@ public class Board {
 
 
             System.out.println("|");
-            for (int col = 0; col < size; col++) {
+            for (int col = 0; col < size-1; col++) {
                 System.out.print("-----");
             }
             System.out.println();
@@ -139,12 +214,15 @@ public class Board {
         return false;
     }
 
-    public void clearBoard(){
+    public void clearBoard() {
         queens.clear();
+        for (int i = 0; i < usedCol.size(); i++) {
+            usedCol.get(i).clear();
+        }
+
     }
 
-
-    public String getStatistic(){
+    public String getStatistic() {
         return "forward checking set queen " + forward_checking_set_queen +
                 "\nforward checking returns " + forward_checking_returns +
                 "\nback tracking set queen " + back_tracking_set_queen +

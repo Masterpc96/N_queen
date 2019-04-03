@@ -7,6 +7,9 @@ public class Queen {
         this.col = col;
     }
 
+    public Queen() {
+    }
+
     public int getRow() {
         return row;
     }
