@@ -10,22 +10,20 @@ public class Board {
     private int forward_checking_set_queen = 0;
     private int back_tracking_set_queen = 0;
 
-    ArrayList<ArrayList<Integer>> usedCol = new ArrayList<>();
+    private ArrayList<ArrayList<Integer>> usedCol = new ArrayList<>();
 
-    public Board(int size) {
+    Board(int size) {
         this.size = size;
         for (int i = 0; i < size; i++) {
             usedCol.add(new ArrayList<>());
         }
     }
 
-    ArrayList<Queen> queens = new ArrayList<>();
-
-    private boolean added = false;
+    private ArrayList<Queen> queens = new ArrayList<>();
 
     private int previousCol = 0;
 
-    public void forwardCheckingRandPosition() {
+    void forwardCheckingRandPosition() {
         Queen temp = new Queen();
         int col = 0;
         boolean back = false;
@@ -62,7 +60,7 @@ public class Board {
     public void forwardChecking() {
         Queen temp;
         for (int row = 0; row < size; row++) {
-            added = false;
+            boolean added = false;
 
             for (int col = previousCol; col < size; col++) {
                 temp = new Queen(row, col);
@@ -149,7 +147,7 @@ public class Board {
             System.out.print(" " + col + " |");
         }
         System.out.println();
-        for (int col = 0; col < size-1; col++) {
+        for (int col = 0; col < size - 1; col++) {
             System.out.print("-----");
         }
 
@@ -164,7 +162,7 @@ public class Board {
             for (int col = 0; col < size; col++) {
                 // print queen position, if queen is on the position print X otherwise print white space
                 if (temp.getCol() == col) {
-                    System.out.print("| X ");
+                    System.out.print("| Q ");
                 } else {
                     System.out.print("|   ");
                 }
@@ -172,7 +170,7 @@ public class Board {
 
 
             System.out.println("|");
-            for (int col = 0; col < size-1; col++) {
+            for (int col = 0; col < size - 1; col++) {
                 System.out.print("-----");
             }
             System.out.println();
@@ -181,10 +179,7 @@ public class Board {
 
     // if there isn't a collision return false
     private boolean checkCollision(Queen queen) {
-        if (!checkVertical(queen) && !checkHorizontal(queen) && !checkDiagonals(queen)) {
-            return false;
-        }
-        return true;
+        return checkVertical(queen) || checkHorizontal(queen) || checkDiagonals(queen);
     }
 
     private boolean checkDiagonals(Queen queen) {
@@ -216,13 +211,13 @@ public class Board {
 
     public void clearBoard() {
         queens.clear();
-        for (int i = 0; i < usedCol.size(); i++) {
-            usedCol.get(i).clear();
+        for (ArrayList<Integer> integers : usedCol) {
+            integers.clear();
         }
 
     }
 
-    public String getStatistic() {
+    String getStatistic() {
         return "forward checking set queen " + forward_checking_set_queen +
                 "\nforward checking returns " + forward_checking_returns +
                 "\nback tracking set queen " + back_tracking_set_queen +
