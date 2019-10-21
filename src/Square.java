@@ -1,17 +1,14 @@
 import java.util.ArrayList;
-import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class Square {
     private int size;
-    private Random r;
-    int board[][];
+    private int[][] board;
 
-    ArrayList<ArrayList<Integer>> rows = new ArrayList<>();
+    private ArrayList<ArrayList<Integer>> rows = new ArrayList<>();
 
-    public Square(int size) {
+    Square(int size) {
         this.size = size;
-        r = new Random();
         board = new int[size][size];
 
         for (int i = 0; i < size; i++) {
@@ -22,12 +19,12 @@ public class Square {
         }
     }
 
-    public void calculate() {
+    void calculate() {
         for (int i = 0; i < size; i++) {
             int temp = 1;
             for (int j = 0; j < size; j++) {
-                while(check(temp, i, j)){
-                    temp ++;
+                while (check(temp, i, j)) {
+                    temp++;
                     if (temp > size) {
                         temp = 1;
                     }
@@ -37,9 +34,9 @@ public class Square {
         }
     }
 
-    public void calculateRandomnly() {
+    public void calculateRandomly() {
         Integer value;
-        Integer index;
+        int index;
         for (int i = 0; i < size; i++) {
             for (int j = 0; j < size; j++) {
                 do {
@@ -59,22 +56,21 @@ public class Square {
     }
 
     private boolean check(Integer value, int i, int j) {
-        boolean exist = false;
         for (int x = 0; x < size; x++) {
             if (board[i][x] == value) {
-                exist = true;
+                return true;
             }
         }
         // check col
         for (int x = 0; x < size; x++) {
             if (board[x][j] == value) {
-                exist = true;
+                return true;
             }
         }
-        return exist;
+        return false;
     }
 
-    public void print() {
+    void print() {
         for (int i = 0; i < size; i++) {
             for (int j = 0; j < size; j++) {
                 System.out.print(board[i][j] + " ");
